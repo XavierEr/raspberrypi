@@ -5,6 +5,7 @@ from sense_hat import SenseHat
 
 sense = SenseHat()
 sense.clear()
+sense.low_light = True
 
 black = [0, 0, 0]
 white = [255, 255, 255]
