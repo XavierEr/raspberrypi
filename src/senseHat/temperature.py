@@ -1,8 +1,7 @@
 import math
 from random import randint
 from time import sleep
-# from sense_hat import SenseHat
-from sense_emu import SenseHat
+from sense_hat import SenseHat
 
 sense = SenseHat()
 sense.clear()
