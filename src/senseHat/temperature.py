@@ -1,7 +1,8 @@
 import math
 from random import randint
 from time import sleep
-from sense_hat import SenseHat
+# from sense_hat import SenseHat
+from sense_emu import SenseHat
 
 sense = SenseHat()
 sense.clear()
@@ -83,46 +84,107 @@ def fillPixel(pixelPositions, color):
     sense.set_pixels(pixels)
 
 
-def resetLoadingDot():
-    sense.set_pixel(0, 6, black)
-    sense.set_pixel(1, 6, black)
-    sense.set_pixel(0, 7, black)
-    sense.set_pixel(1, 7, black)
+def fillLoadingDot(rgbArgs):
+    sense.set_pixel(0, 6, rgbArgs)
+    sense.set_pixel(1, 6, rgbArgs)
+    sense.set_pixel(0, 7, rgbArgs)
+    sense.set_pixel(1, 7, rgbArgs)
 
 
-def fillLoadingDot():
-    randomColor = (randint(0, 255), randint(0, 255), randint(0, 255))
-
-    sense.set_pixel(0, 6, randomColor)
-    sense.set_pixel(1, 6, randomColor)
-    sense.set_pixel(0, 7, randomColor)
-    sense.set_pixel(1, 7, randomColor)
+def fillDecimalDot(decimalValue, rgbArgs):
+    if decimalValue == 1:
+        sense.set_pixel(3, 7, rgbArgs)
+    elif decimalValue == 2:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+    elif decimalValue == 3:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+        sense.set_pixel(5, 7, rgbArgs)
+    elif decimalValue == 4:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+        sense.set_pixel(5, 7, rgbArgs)
+        sense.set_pixel(5, 6, rgbArgs)
+    elif decimalValue == 5:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+        sense.set_pixel(5, 7, rgbArgs)
+        sense.set_pixel(5, 6, rgbArgs)
+        sense.set_pixel(6, 7, rgbArgs)
+    elif decimalValue == 6:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+        sense.set_pixel(5, 7, rgbArgs)
+        sense.set_pixel(5, 6, rgbArgs)
+        sense.set_pixel(6, 7, rgbArgs)
+        sense.set_pixel(6, 6, rgbArgs)
+    elif decimalValue == 7:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+        sense.set_pixel(5, 7, rgbArgs)
+        sense.set_pixel(5, 6, rgbArgs)
+        sense.set_pixel(6, 7, rgbArgs)
+        sense.set_pixel(6, 6, rgbArgs)
+        sense.set_pixel(7, 7, rgbArgs)
+    elif decimalValue == 8:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+        sense.set_pixel(5, 7, rgbArgs)
+        sense.set_pixel(5, 6, rgbArgs)
+        sense.set_pixel(6, 7, rgbArgs)
+        sense.set_pixel(6, 6, rgbArgs)
+        sense.set_pixel(7, 7, rgbArgs)
+        sense.set_pixel(7, 6, rgbArgs)
+    elif decimalValue == 9:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+        sense.set_pixel(5, 7, rgbArgs)
+        sense.set_pixel(5, 6, rgbArgs)
+        sense.set_pixel(6, 7, rgbArgs)
+        sense.set_pixel(6, 6, rgbArgs)
+        sense.set_pixel(7, 7, rgbArgs)
+        sense.set_pixel(7, 6, rgbArgs)
+        sense.set_pixel(7, 5, rgbArgs)
+    else:
+        sense.set_pixel(3, 7, rgbArgs)
+        sense.set_pixel(4, 7, rgbArgs)
+        sense.set_pixel(5, 7, rgbArgs)
+        sense.set_pixel(6, 7, rgbArgs)
+        sense.set_pixel(7, 7, rgbArgs)
+        sense.set_pixel(5, 6, rgbArgs)
+        sense.set_pixel(6, 6, rgbArgs)
+        sense.set_pixel(7, 6, rgbArgs)
+        sense.set_pixel(7, 5, rgbArgs)
 
 
 while True:
     temperature = sense.get_temperature_from_humidity()
 
-    if temperature >= 0 and temperature < 100:
-        stringTemperature = str(math.ceil(temperature))
-        formattedTemperature = stringTemperature.zfill(2)
+    stringTemperature = '%.1f' % temperature
+    splitedStringTemperature = stringTemperature.split('.')
 
-        firstNumber = formattedTemperature[0]
-        secondNumber = formattedTemperature[1]
+    stringWholeTemperature = splitedStringTemperature[0]
 
-        fillPixel(leftNumberPixelPositions[int(
-            firstNumber)] + rightNumberPixelPositions[int(secondNumber)], white)
+    formattedTemperature = ''
+
+    if temperature >= 0:
+        formattedTemperature = stringWholeTemperature.zfill(2)
     else:
-        stringTemperature = str(math.floor(temperature))
-        formattedTemperature = stringTemperature[1:len(
-            stringTemperature)].zfill(2)
+        formattedTemperature = stringWholeTemperature[1:len(
+            stringWholeTemperature)].zfill(2)
 
-        firstNumber = formattedTemperature[0]
-        secondNumber = formattedTemperature[1]
+    firstNumber = formattedTemperature[0]
+    secondNumber = formattedTemperature[1]
+    color = blue if temperature < 26 else red if temperature > 31 else white
 
-        fillPixel(leftNumberPixelPositions[int(
-            firstNumber)] + rightNumberPixelPositions[int(secondNumber)], blue)
+    fillPixel(leftNumberPixelPositions[int(
+        firstNumber)] + rightNumberPixelPositions[int(secondNumber)], color)
 
-    resetLoadingDot()
+    fillDecimalDot(
+        int(splitedStringTemperature[1]), black if int(splitedStringTemperature[1]) == 0 else color)
+
+    fillLoadingDot(black)
     sleep(0.5)
-    fillLoadingDot()
+    fillLoadingDot([randint(0, 255), randint(0, 255), randint(0, 255)])
     sleep(1)
